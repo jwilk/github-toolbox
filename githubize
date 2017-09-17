@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Copyright © 2017 Jakub Wilk <jwilk@jwilk.net>
+# SPDX-License-Identifier: MIT
+
+set -e -u
+ref=$(git symbolic-ref HEAD)
+ref=${ref#refs/heads/}
+git rev-list -0 "refs/remotes/origin/$ref" -- > /dev/null
+origin_url=$(git remote get-url origin)
+origin_url=${origin_url%.git}
+upstream=${origin_url#https://github.com/}
+username=$(git config --get hub.username)-forks
+fork="$username/${upstream#*/}"
+fork_url="https://github.com/$fork.git"
+git config --replace-all remote.pushdefault fork
+git config --replace-all hub.forkremote fork
+git config --replace-all hub.urltype clone_url
+git config --replace-all hub.upstream "$upstream"
+git config --replace-all hub.forkrepo  "$fork"
+[ "$ref" = master ] || git config --replace-all hub.pullbase "$ref"
+git remote add fork "$fork_url"
+
+# vim:ts=4 sts=4 sw=4 et

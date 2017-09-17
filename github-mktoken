@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Copyright © 2017 Jakub Wilk <jwilk@jwilk.net>
+# SPDX-License-Identifier: MIT
+
+set -e -u
+if [ $# -lt 1 ]
+then
+    printf 'Usage: %s <note> [scope...]\n' "$0" >&2
+    exit 1
+fi
+cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/)
+note="$1"
+shift
+scopes=$(jo -a "$@" < /dev/null)
+json=$(jo -B scopes="$scopes" note="$note")
+read -e -p 'User: ' -i "$USER" user
+read -e -p 'Password: ' -s password
+printf '\n' >&2
+res=$(curl \
+    --silent --fail --show-error \
+    --cacert "$cacert" \
+    -K <(printf "user = %s:%s\n" "$user" "$password") \
+    -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
+    -H 'Accept: application/vnd.github.v3+json' \
+    -X POST --data "$json" \
+    'https://api.github.com/authorizations'
+)
+jq . <<EOF
+$res
+EOF
+
+# vim:ts=4 sts=4 sw=4 et
