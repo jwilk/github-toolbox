@@ -39,16 +39,24 @@ else
     usage >&2
     exit 1
 fi
-if expr "$url" : 'https://github.com/[^/]\+/[^/]\+/issues/[0-9]\+$' > /dev/null
+if grep -E -x 'https://github.com/[^/]+/[^/]+/issues/[0-9]+(#issuecomment-[0-9]+)?' <<<"$url" > /dev/null
 then
     owner=$(printf '%s' "$url" | cut -d / -f 4)
     repo=$(printf '%s' "$url" | cut -d / -f 5)
     number=$(printf '%s' "$url" | cut -d / -f 7)
+    comment=${url#*#issuecomment-}
+    [ "$comment" != "$url" ] || comment=
 else
     usage >&2
     exit 1
 fi
-url="https://api.github.com/repos/$owner/$repo/issues/$number/reactions"
+url='https://api.github.com/repos'
+if [ -n "$comment" ]
+then
+    url="$url/$owner/$repo/issues/comments/$comment/reactions"
+else
+    url="$url/$owner/$repo/issues/$number/reactions"
+fi
 json='{"content":"'"$reaction"'"}'
 printf '%s %s\n' POST "$url"
 curl \
