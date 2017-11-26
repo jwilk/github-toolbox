@@ -14,8 +14,8 @@ note="$1"
 shift
 scopes=$(jo -a "$@" < /dev/null)
 json=$(jo -B scopes="$scopes" note="$note")
-read -e -p 'User: ' -i "$USER" user
-read -e -p 'Password: ' -s password
+read -r -e -p 'User: ' -i "$USER" user
+read -r -e -p 'Password: ' -s password
 printf '\n' >&2
 res=$(curl \
     --silent --fail --show-error \
