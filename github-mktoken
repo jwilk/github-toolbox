@@ -19,7 +19,7 @@ read -r -e -p 'Password: ' -s password
 printf '\n' >&2
 res=$(curl \
     --silent --fail --show-error \
-    --cacert "$cacert" \
+    --capath /nonexistent --cacert "$cacert" \
     -K <(printf "user = %s:%s\n" "$user" "$password") \
     -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
     -H 'Accept: application/vnd.github.v3+json' \

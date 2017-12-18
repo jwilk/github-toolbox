@@ -61,7 +61,7 @@ json='{"content":"'"$reaction"'"}'
 printf '%s %s\n' POST "$url"
 curl \
     --silent --fail --show-error \
-    --cacert "$cacert" \
+    --capath /nonexistent --cacert "$cacert" \
     -K <(printf "header = \"Authorization: token %s\"\n" "$github_token") \
     -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
     -H 'Accept: application/vnd.github.squirrel-girl-preview' \

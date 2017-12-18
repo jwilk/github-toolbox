@@ -14,7 +14,7 @@ do
     json=$(jo -B name="${repo#*/}" has_projects@false)
     curl \
         --silent --fail --show-error \
-        --cacert "$cacert" \
+        --capath /nonexistent --cacert "$cacert" \
         -K <(printf "header = \"Authorization: token %s\"\n" "$github_token") \
         -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
         -H 'Accept: application/vnd.github.v3+json' \
