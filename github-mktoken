@@ -3,13 +3,23 @@
 # Copyright © 2017 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
+get_curl_config()
+{
+    printf "user = %s:%s\n" "$user" "$password"
+    if [ -n "$cacert" ]
+    then
+        printf 'capath = "/nonexistent"\n'
+        printf 'cacert = "%s"\n' "$cacert"
+    fi
+}
+
 set -e -u
 if [ $# -lt 1 ]
 then
     printf 'Usage: %s <note> [scope...]\n' "$0" >&2
     exit 1
 fi
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/)
+cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 note="$1"
 shift
 scopes=$(jo -a "$@" < /dev/null)
@@ -19,8 +29,7 @@ read -r -e -p 'Password: ' -s password
 printf '\n' >&2
 res=$(curl \
     --silent --fail --show-error \
-    --capath /nonexistent --cacert "$cacert" \
-    -K <(printf "user = %s:%s\n" "$user" "$password") \
+    -K <(get_curl_config) \
     -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
     -H 'Accept: application/vnd.github.v3+json' \
     -X POST --data "$json" \

@@ -10,8 +10,18 @@ usage()
     printf 'URLs: https://github.com/<owner>/<repo>/issues/<n>\n'
 }
 
+get_curl_config()
+{
+    printf "header = \"Authorization: token %s\"\n" "$github_token"
+    if [ -n "$cacert" ]
+    then
+        printf 'capath = "/nonexistent"\n'
+        printf 'cacert = "%s"\n' "$cacert"
+    fi
+}
+
 set -e -u
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/)
+cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 github_token=$(sed -n -r -e 's/token\s*=\s*//p' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 if [ $# -ne 2 ]
 then
@@ -61,8 +71,7 @@ json='{"content":"'"$reaction"'"}'
 printf '%s %s\n' POST "$url"
 curl \
     --silent --fail --show-error \
-    --capath /nonexistent --cacert "$cacert" \
-    -K <(printf "header = \"Authorization: token %s\"\n" "$github_token") \
+    -K <(get_curl_config) \
     -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
     -H 'Accept: application/vnd.github.squirrel-girl-preview' \
     -X POST \
