@@ -1,0 +1,23 @@
+Prerequisites
+=============
+
+* bash
+* curl
+* jo_
+* jq_
+* cligh_
+* git-hub_
+
+.. _jo:
+   https://github.com/jpmens/jo
+
+.. _jq:
+   https://github.com/stedolan/jq
+
+.. _cligh:
+   https://github.com/CMB/cligh
+
+.. _git-hub:
+   https://github.com/sociomantic-tsunami/git-hub
+
+.. vim:ft=rst ts=3 sts=3 sw=3 et
