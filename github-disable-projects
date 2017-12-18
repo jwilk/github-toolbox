@@ -15,7 +15,7 @@ get_curl_config()
 
 set -e -u
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(sed -n -r -e 's/^token\s*=\s*//p' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
+github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 for repo in "$@"
 do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
