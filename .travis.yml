@@ -4,6 +4,8 @@ language: generic
 addons:
   apt:
     packages:
+    - python-docutils
     - shellcheck
 script:
 - shellcheck git*
+- private/check-rst
