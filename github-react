@@ -22,7 +22,7 @@ get_curl_config()
 
 set -e -u
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(sed -n -r -e 's/token\s*=\s*//p' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
+github_token=$(sed -n -r -e 's/^token\s*=\s*//p' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 if [ $# -ne 2 ]
 then
     usage >&2
