@@ -2,6 +2,7 @@ Prerequisites
 =============
 
 * bash
+* Perl (≥ 5.10)
 * curl
 * jo_
 * jq_
