@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Copyright © 2018 Jakub Wilk <jwilk@jwilk.net>
+# SPDX-License-Identifier: MIT
+
+set -e -u
+origin_url=$(git remote get-url origin)
+origin_url=${origin_url%/}
+origin_url=${origin_url%.git}
+hash=$(git show --no-patch --pretty=format:%H "$@")
+url="$origin_url/commit/$hash"
+xdg-open "$url"
