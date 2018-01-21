@@ -11,6 +11,11 @@ origin_url=$(git remote get-url origin)
 origin_url=${origin_url%/}
 origin_url=${origin_url%.git}
 upstream=${origin_url#https://github.com/}
+if [ "$upstream" = "$origin_url" ]
+then
+    printf "githubize: %s doesn't look like a GitHub URL\\n" "$origin_url" >&2
+    exit 1
+fi
 username=$(git config --get hub.username)-forks
 fork="$username/${upstream#*/}"
 fork_url="https://github.com/$fork.git"
