@@ -21,6 +21,7 @@ method=PUT
 for repo in "$@"
 do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
+    repo=${repo#https://github.com/}
     url="https://api.github.com/user/starred/$repo"
     printf '%s %s\n' "$method" "$url"
     curl \

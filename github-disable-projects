@@ -19,6 +19,7 @@ github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$H
 for repo in "$@"
 do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
+    repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo"
     printf 'PATCH %s\n' "$url"
     json=$(jo -B name="${repo#*/}" has_projects@false)
