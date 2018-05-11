@@ -2,9 +2,9 @@ dist: trusty
 sudo: false
 language: generic
 install:
-- python -m pip install --user docutils
+- python -m pip install --user restructuredtext-lint
 script:
 - shellcheck git*
-- private/check-rst
+- restructuredtext-lint --encoding=UTF-8 README
 
 # vim:ts=2 sts=2 sw=2 et
