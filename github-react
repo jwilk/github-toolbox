@@ -51,9 +51,9 @@ else
 fi
 if LC_ALL=C grep -E -x 'https://github.com/[^/]+/[^/]+/issues/[0-9]+(#issuecomment-[0-9]+)?' <<<"$url" > /dev/null
 then
-    owner=$(printf '%s' "$url" | cut -d / -f 4)
-    repo=$(printf '%s' "$url" | cut -d / -f 5)
-    number=$(printf '%s' "$url" | cut -d / -f 7)
+    owner=$(cut -d / -f 4 <<< "$url")
+    repo=$(cut -d / -f 5 <<< "$url")
+    number=$(cut -d / -f 7 <<< "$url")
     comment=${url#*#issuecomment-}
     [ "$comment" != "$url" ] || comment=
 else
