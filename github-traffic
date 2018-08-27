@@ -22,7 +22,7 @@ EOF
 
 get_curl_config()
 {
-    printf "header = \"Authorization: token %s\"\n" "$github_token"
+    printf 'header = "Authorization: token %s"\n' "$github_token"
     if [ -n "$cacert" ]
     then
         printf 'capath = "/nonexistent"\n'

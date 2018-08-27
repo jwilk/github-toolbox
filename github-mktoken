@@ -5,7 +5,7 @@
 
 get_curl_config()
 {
-    printf "user = %s:%s\n" "$user" "$password"
+    printf 'user = %s:%s\n' "$user" "$password"
     if [ -n "$cacert" ]
     then
         printf 'capath = "/nonexistent"\n'

@@ -12,7 +12,7 @@ usage()
 
 get_curl_config()
 {
-    printf "header = \"Authorization: token %s\"\n" "$github_token"
+    printf 'header = "Authorization: token %s"\n' "$github_token"
     if [ -n "$cacert" ]
     then
         printf 'capath = "/nonexistent"\n'
@@ -33,16 +33,16 @@ url="$2"
 if [ "$reaction" = '+1' ] || [ "$reaction" = '-1' ]
 then
     :
-elif [ "$reaction" = ":D" ]
+elif [ "$reaction" = ':D' ]
 then
     reaction=laugh
-elif [ "$reaction" = ":/" ]
+elif [ "$reaction" = ':/' ]
 then
     reaction=confused
-elif [ "$reaction" = "<3" ]
+elif [ "$reaction" = '<3' ]
 then
     reaction=heart
-elif [ "$reaction" = "\o/" ]
+elif [ "$reaction" = '\o/' ]
 then
     reaction=hooray
 else
