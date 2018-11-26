@@ -1,9 +1,23 @@
 dist: trusty
-language: generic
+language: python
+python:
+- "3.2"
+- "3.3"
+- "3.4"
+- "3.5"
+- "3.6"
+- "3.7-dev"
+before_install:
+- pyflakes=pyflakes
+- if [[ $TRAVIS_PYTHON_VERSION = 3.[23] ]]; then pyflakes='pyflakes<2'; fi
 install:
-- python -m pip install --user restructuredtext-lint
+- python3 -m pip install pydiatra $pyflakes
+- python3 -m pip install restructuredtext-lint
 script:
 - shellcheck git*
+- python3 -m pydiatra .
+- python3 -m pyflakes .
+- printf 'From\072 Jakub Wilk <notifications@github.com>\nX-GitHub-Sender\072 jwilk\n\ntest\n' | ./mail-filter
 - restructuredtext-lint --encoding=UTF-8 README
 
 # vim:ts=2 sts=2 sw=2 et
