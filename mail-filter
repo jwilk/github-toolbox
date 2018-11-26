@@ -12,9 +12,10 @@ def main():
     sender = msg['X-GitHub-Sender']
     from_hdr = msg['From']
     name, addr = email.utils.parseaddr(from_hdr)
-    from_hdr = email.utils.formataddr((name, sender + '@users.noreply.github.com'))
-    del msg['From']
-    msg['From'] = from_hdr
+    if sender is not None:
+        from_hdr = email.utils.formataddr((name, sender + '@users.noreply.github.com'))
+        del msg['From']
+        msg['From'] = from_hdr
     generator = email.generator.BytesGenerator(sys.stdout.buffer, mangle_from_=False)
     generator.flatten(msg, unixfrom=True)
 
