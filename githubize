@@ -3,11 +3,43 @@
 # Copyright © 2017-2018 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
+usage()
+{
+    printf 'Usage: %s [-r REMOTE]\n' "${0##*/}"
+}
+
 set -e -u
+remote=origin
+while getopts 'r:h-:' opt
+do
+    case "$opt" in
+        r|p|v|c)
+            remote="$OPTARG";;
+        h)
+            usage long
+            exit 0;;
+        -)
+            if [ "$OPTARG" = help ]; then
+                usage
+                exit 0
+            else
+                usage >&2
+                exit 1
+            fi
+            ;;
+        *) exit 1;;
+    esac
+done
+shift $((OPTIND - 1))
+if [ $# != 0 ]
+then
+    usage >&2
+    exit 1
+fi
 ref=$(git symbolic-ref HEAD)
 ref=${ref#refs/heads/}
 git rev-list -0 "refs/remotes/origin/$ref" -- > /dev/null
-origin_url=$(git remote get-url origin)
+origin_url=$(git remote get-url "$remote")
 origin_url=${origin_url%/}
 origin_url=${origin_url%.git}
 upstream=${origin_url#https://github.com/}
