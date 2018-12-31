@@ -30,6 +30,7 @@ do
         -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
         -H 'Accept: application/vnd.github.v3+json' \
         -X POST --data "$json" \
+        --location \
         "$url"
     )
     jq -r '.["html_url"]' <<<"$res"
