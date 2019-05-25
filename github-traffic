@@ -86,7 +86,7 @@ case "$type" in
         ;;
 esac
 url="$url/$suffix"
-jq=".$node[] | [.count, .uniques$(printf ', .%s' $columns)] | @tsv"
+jq=".${node}[] | [.count, .uniques$(printf ', .%s' $columns)] | @tsv"
 printf 'GET %s\n' "$url" >&2
 res=$(curl \
     --silent --fail --show-error \
