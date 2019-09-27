@@ -68,25 +68,27 @@ node=''
 case "$type" in
     r)
         suffix=popular/referrers
-        columns='referrer'
+        columns=('referrer')
         ;;
     p)
         suffix=popular/paths
-        columns='path title'
+        columns=('path' 'title')
         ;;
     v)
         suffix=views
-        columns='timestamp[:10]'
+        columns=('timestamp[:10]')
         node=views
         ;;
     c)
         suffix=clones
         node=clones
-        columns='timestamp[:10]'
+        columns=('timestamp[:10]')
         ;;
 esac
 url="$url/$suffix"
-jq=".${node}[] | [.count, .uniques$(printf ', .%s' $columns)] | @tsv"
+set +f
+jq=".${node}[] | [.count, .uniques$(printf ', .%s' "${columns[@]}")] | @tsv"
+set -f
 printf 'GET %s\n' "$url" >&2
 res=$(curl \
     --silent --fail --show-error \
