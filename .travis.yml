@@ -21,7 +21,7 @@ script:
 - shellcheck git*
 - python3 -m pydiatra .
 - python3 -m pyflakes .
-- printf 'From\72 Jakub Wilk <notifications@github.com>\nX-GitHub-Sender\72 jwilk\n\ntest\n' | ./mail-filter
+- prove -v
 - restructuredtext-lint --encoding=UTF-8 README
 
 # vim:ts=2 sts=2 sw=2 et
