@@ -12,11 +12,13 @@ jobs:
   - python: "3.7"
   - python: "3.8-dev"
 before_install:
+- docutils=docutils
+- if [[ $TRAVIS_PYTHON_VERSION = 3.[234] ]]; then docutils+='<0.16'; fi
 - pyflakes=pyflakes
 - if [[ $TRAVIS_PYTHON_VERSION = 3.[23] ]]; then pyflakes='pyflakes<2'; fi
 install:
 - python3 -m pip install pydiatra $pyflakes
-- python3 -m pip install restructuredtext-lint
+- python3 -m pip install $docutils restructuredtext-lint
 script:
 - shellcheck git*
 - python3 -m pydiatra .
