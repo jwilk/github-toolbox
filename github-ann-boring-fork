@@ -22,7 +22,7 @@ do
     repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo"
     printf 'PATCH %s\n' "$url"
-    json=$(jo -- -s name="${repo#*/}" description='[boring fork, please ignore]' -s homepage=)
+    json=$(jq -n '{name: $repo, description: "[boring fork, please ignore]", homepage: ""}' --arg repo "${repo#*/}")
     curl \
         --silent --fail --show-error \
         -K <(get_curl_config) \

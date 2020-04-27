@@ -17,7 +17,7 @@ set -e -u
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 user=$(git -C / config --get hub.username)-forks
-json=$(jo "organization=$user")
+json=$(jq -n '{organization: $user}' --arg user "$user")
 for repo in "$@"
 do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"

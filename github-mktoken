@@ -22,8 +22,7 @@ fi
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 note="$1"
 shift
-scopes=$(jo -a "$@" < /dev/null)
-json=$(jo -B scopes="$scopes" note="$note")
+json=$(IFS=$'\n'; jq -nR '{scopes: [inputs | select(length>0)], note: $note}' --arg note "$note" <<< "$*")
 read -r -e -p 'User: ' -i "$USER" user
 read -r -e -p 'Password: ' -s password
 printf '\n' >&2

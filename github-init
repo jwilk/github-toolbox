@@ -26,7 +26,7 @@ do
         repo="${repo#*/}"
     fi
     url="https://api.github.com/$url"
-    json=$(jo -B name="$repo" has_wiki@0 has_projects@0)
+    json=$(jq -n '{name: $repo, has_wiki: false, has_projects: false}' --arg repo "$repo")
     printf 'POST %s\n' "$url"
     res=$(curl \
         --silent --fail --show-error \

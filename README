@@ -6,13 +6,9 @@ Most of the scripts require:
 * bash
 * Perl (≥ 5.10)
 * curl
-* jo_
-* jq_
+* jq_ (≥ 1.5)
 * cligh_
 * git-hub_
-
-.. _jo:
-   https://github.com/jpmens/jo
 
 .. _jq:
    https://github.com/stedolan/jq
