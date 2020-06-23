@@ -18,6 +18,11 @@ cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) 
 github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 method=PUT
 [ "${0%%*-unstar}" ] || method=DELETE
+if [ $# -eq 0 ]
+then
+    printf 'Usage: %s REPO [REPO...]\n' "${0##*/}" >&2
+    exit 1
+fi
 for repo in "$@"
 do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
