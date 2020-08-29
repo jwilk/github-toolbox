@@ -4,16 +4,20 @@
 # SPDX-License-Identifier: MIT
 
 import email.generator
-import email.utils
+import email.headerregistry
+import email.policy
 import sys
 
 def main():
-    msg = email.message_from_binary_file(sys.stdin.buffer)
+    msg = email.message_from_binary_file(sys.stdin.buffer, policy=email.policy.default)
     sender = msg['X-GitHub-Sender']
-    from_hdr = msg['From']
-    name, addr = email.utils.parseaddr(from_hdr)
+    [from_hdr] = msg['From'].addresses
     if sender is not None:
-        from_hdr = email.utils.formataddr((name, sender + '@users.noreply.github.com'))
+        from_hdr = email.headerregistry.Address(
+            display_name=from_hdr.display_name,
+            username=sender,
+            domain='users.noreply.github.com'
+        )
         del msg['From']
         msg['From'] = from_hdr
     generator = email.generator.BytesGenerator(sys.stdout.buffer, mangle_from_=False)
