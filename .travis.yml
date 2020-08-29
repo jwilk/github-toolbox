@@ -2,8 +2,6 @@ dist: xenial
 language: python
 jobs:
   include:
-  - python: "3.2"
-    dist: trusty
   - python: "3.3"
     dist: trusty
   - python: "3.4"
@@ -14,9 +12,9 @@ jobs:
   - python: "3.9-dev"
 before_install:
 - docutils=docutils
-- if [[ $TRAVIS_PYTHON_VERSION = 3.[234] ]]; then docutils+='<0.16'; fi
+- if [[ $TRAVIS_PYTHON_VERSION = 3.[34] ]]; then docutils+='<0.16'; fi
 - pyflakes=pyflakes
-- if [[ $TRAVIS_PYTHON_VERSION = 3.[23] ]]; then pyflakes='pyflakes<2'; fi
+- if [[ $TRAVIS_PYTHON_VERSION = 3.3 ]]; then pyflakes='pyflakes<2'; fi
 install:
 - python3 -m pip install pydiatra $pyflakes
 - python3 -m pip install $docutils restructuredtext-lint
