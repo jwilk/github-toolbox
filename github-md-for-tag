@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Copyright © 2020 Jakub Wilk <jwilk@jwilk.net>
+# SPDX-License-Identifier: MIT
+
+set -e -u
+prog=${0##*/}
+url=$(git remote get-url origin)
+url=${url%/}
+url=${url%.git}
+if [ $# -ne 1 ]
+then
+    printf 'Usage: %s TAG\n' "$prog" >&2
+    exit 1
+fi
+tag="$1"
+xtag=$(git tag -l "$1")
+if [ "$tag" != "$xtag" ]
+then
+    printf '%s: no such tag: %s\n' "$prog" "$tag" >&2
+    exit 1
+fi
+printf '%s\n' "[$tag]($url/releases/tag/$tag)"
+
+# vim:ts=4 sts=4 sw=4 et
