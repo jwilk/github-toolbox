@@ -5,7 +5,7 @@
 
 usage()
 {
-    printf 'Usage: %s <reaction> <url>\n' "$0"
+    printf 'Usage: %s <reaction> <url>\n' "${0##*/}"
     printf 'Reactions: +1 -1 :D :/ <3 \o/\n'
     printf 'URLs: https://github.com/<owner>/<repo>/issues/<n>\n'
 }
