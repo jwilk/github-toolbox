@@ -49,13 +49,13 @@ else
     usage >&2
     exit 1
 fi
-if LC_ALL=C grep -E -x 'https://github.com/[^/]+/[^/]+/issues/[0-9]+(#issuecomment-[0-9]+)?' <<<"$url" > /dev/null
+re='^https://github[.]com/([^/]+)/([^/]+)/issues/([0-9]+)(#issuecomment-([0-9]+))?$'
+if [[ $url =~ $re ]]
 then
-    owner=$(cut -d / -f 4 <<< "$url")
-    repo=$(cut -d / -f 5 <<< "$url")
-    number=$(cut -d / -f 7 <<< "$url")
-    comment=${url#*#issuecomment-}
-    [ "$comment" != "$url" ] || comment=
+    owner=${BASH_REMATCH[1]}
+    repo=${BASH_REMATCH[2]}
+    number=${BASH_REMATCH[3]}
+    comment=${BASH_REMATCH[5]}
 else
     usage >&2
     exit 1
