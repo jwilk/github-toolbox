@@ -28,7 +28,7 @@ then
     exit 1
 fi
 url="$1"
-re='https://github[.]com/([^/]+/[^/]+)/actions/runs/([0-9]+)([?].*)?'
+re='^https://github[.]com/([^/]+/[^/]+)/actions/runs/([0-9]+)([?].*)?$'
 if [[ $url =~ $re ]]
 then
     repo=${BASH_REMATCH[1]}
