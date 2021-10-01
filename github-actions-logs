@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Copyright © 2017-2021 Jakub Wilk <jwilk@jwilk.net>
+# SPDX-License-Identifier: MIT
+
+usage()
+{
+    printf 'Usage: %s URL > FILE.zip\n' "${0##*/}"
+    printf 'URLs: https://github.com/OWNER/REPO/runs/RUNID\n'
+}
+
+get_curl_config()
+{
+    printf 'header = "Authorization: token %s"\n' "$github_token"
+    if [ -n "$cacert" ]
+    then
+        printf 'capath = "/nonexistent"\n'
+        printf 'cacert = "%s"\n' "$cacert"
+    fi
+}
+
+set -e -u
+cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
+github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
+if [ $# -ne 1 ]
+then
+    usage >&2
+    exit 1
+fi
+url="$1"
+re='https://github[.]com/([^/]+/[^/]+)/actions/runs/([0-9]+)([?].*)?'
+if [[ $url =~ $re ]]
+then
+    repo=${BASH_REMATCH[1]}
+    runid=${BASH_REMATCH[2]}
+else
+    usage >&2
+    exit 1
+fi
+if tty <&1 >/dev/null
+then
+    usage >&2
+    exit 1
+fi
+url="https://api.github.com/repos/$repo/actions/runs/$runid/logs"
+printf '%s %s\n' GET "$url" >&2
+curl \
+    --silent --fail --show-error \
+    -K <(get_curl_config) \
+    -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
+    -H 'Accept: application/vnd.github.v3+json' \
+    -L \
+    "$url"
+
+# vim:ts=4 sts=4 sw=4 et
