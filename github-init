@@ -32,7 +32,7 @@ do
     fi
     url="https://api.github.com/$url"
     json=$(jq -n '{name: $repo, has_wiki: false, has_projects: false}' --arg repo "$repo")
-    printf 'POST %s\n' "$url"
+    printf 'POST %s\n' "$url" >&2
     res=$(curl \
         --silent --fail --show-error \
         -K <(get_curl_config) \

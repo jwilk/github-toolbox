@@ -26,7 +26,7 @@ do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
     repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo"
-    printf 'PATCH %s\n' "$url"
+    printf 'PATCH %s\n' "$url" >&2
     json=$(jq -n '{name: $repo, has_projects: false}' --arg repo "${repo#*/}")
     curl \
         --silent --fail --show-error \

@@ -26,7 +26,7 @@ do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
     repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo"
-    printf 'DELETE %s\n' "$url"
+    printf 'DELETE %s\n' "$url" >&2
     curl \
         --silent --fail --show-error \
         -K <(get_curl_config) \
