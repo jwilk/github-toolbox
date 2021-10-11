@@ -5,7 +5,7 @@
 
 usage()
 {
-    printf 'Usage: %s URL > FILE.zip\n' "${0##*/}"
+    printf 'Usage: %s URL DESTDIR\n' "${0##*/}"
     printf 'URLs: https://github.com/OWNER/REPO/runs/RUNID\n'
 }
 
@@ -22,12 +22,25 @@ get_curl_config()
 set -e -u
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
-if [ $# -ne 1 ]
+if [ $# -ne 2 ]
 then
     usage >&2
     exit 1
 fi
 url="$1"
+destdir="$2"
+if [ -d "$destdir" ]
+then
+    nonempty=$(find "$destdir/" -maxdepth 0 -empty)
+    if [[ -z $nonempty ]]
+    then
+        printf '%s: error: output dir not empty: %s\n' "${0##*/}" "$destdir" >&2
+        exit 1
+    fi
+else
+    mkdir "$destdir"
+fi
+cd "$destdir"
 re='^https://github[.]com/([^/]+/[^/]+)/actions/runs/([0-9]+)([?].*)?$'
 if [[ $url =~ $re ]]
 then
@@ -37,11 +50,8 @@ else
     usage >&2
     exit 1
 fi
-if tty <&1 >/dev/null
-then
-    usage >&2
-    exit 1
-fi
+unzip -h >/dev/null
+tmpdir=$(mktemp -d -t github-actions-logs.XXXXX)
 url="https://api.github.com/repos/$repo/actions/runs/$runid/logs"
 printf '%s %s\n' GET "$url" >&2
 curl \
@@ -50,6 +60,8 @@ curl \
     -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
     -H 'Accept: application/vnd.github.v3+json' \
     -L \
-    "$url"
+    "$url" > "$tmpdir/tmp.zip"
+unzip "$tmpdir/tmp.zip"
+rm -rf "$tmpdir"
 
 # vim:ts=4 sts=4 sw=4 et
