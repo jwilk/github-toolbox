@@ -5,7 +5,6 @@
 
 usage()
 {
-    prog="${0##*/}"
     cat <<EOF
 Usage:
   $prog URL DESTDIR
@@ -25,6 +24,7 @@ get_curl_config()
 }
 
 set -e -u
+prog="${0##*/}"
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 mc=
@@ -72,7 +72,7 @@ then
     nonempty=$(find "$destdir/" -maxdepth 0 -empty)
     if [[ -z $nonempty ]]
     then
-        printf '%s: error: output dir not empty: %s\n' "${0##*/}" "$destdir" >&2
+        printf '%s: error: output dir not empty: %s\n' "$prog" "$destdir" >&2
         exit 1
     fi
 else
