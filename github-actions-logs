@@ -51,7 +51,7 @@ else
     exit 1
 fi
 unzip -h >/dev/null
-tmpdir=$(mktemp -d -t github-actions-logs.XXXXX)
+tmpdir=$(mktemp -d -t github-actions-logs.XXXXXX)
 url="https://api.github.com/repos/$repo/actions/runs/$runid/logs"
 printf '%s %s\n' GET "$url" >&2
 curl \
