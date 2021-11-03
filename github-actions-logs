@@ -5,8 +5,13 @@
 
 usage()
 {
-    printf 'Usage: %s URL DESTDIR\n' "${0##*/}"
-    printf 'URLs: https://github.com/OWNER/REPO/runs/RUNID\n'
+    prog="${0##*/}"
+    cat <<EOF
+Usage:
+  $prog URL DESTDIR
+  $prog -m URL
+URLs: https://github.com/OWNER/REPO/runs/RUNID
+EOF
 }
 
 get_curl_config()
@@ -22,13 +27,46 @@ get_curl_config()
 set -e -u
 cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
 github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
-if [ $# -ne 2 ]
+mc=
+while getopts 'mh-:' opt
+do
+    case "$opt" in
+        m)
+            mc=y;;
+        h)
+            usage
+            exit 0;;
+        -)
+            if [[ $OPTARG == help ]]; then
+                usage
+                exit 0
+            else
+                usage >&2
+                exit 1
+            fi
+            ;;
+        *) exit 1;;
+    esac
+done
+shift $((OPTIND - 1))
+if [ -n "$mc" ]
 then
-    usage >&2
-    exit 1
+    if [ $# -ne 1 ]
+    then
+        usage >&2
+        exit 1
+    fi
+	mc -h > /dev/null
+    destdir=$(mktemp -d -t github-actions-logs.XXXXXX)
+else
+    if [ $# -ne 2 ]
+    then
+        usage >&2
+        exit 1
+    fi
+    destdir="$2"
 fi
 url="$1"
-destdir="$2"
 if [ -d "$destdir" ]
 then
     nonempty=$(find "$destdir/" -maxdepth 0 -empty)
@@ -63,5 +101,9 @@ curl \
     "$url" > "$tmpdir/tmp.zip"
 unzip "$tmpdir/tmp.zip"
 rm -rf "$tmpdir"
+if [ -n "$mc" ]
+then
+    exec mc "$destdir"
+fi
 
 # vim:ts=4 sts=4 sw=4 et
