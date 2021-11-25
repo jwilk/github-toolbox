@@ -8,7 +8,7 @@ import email.headerregistry
 import email.policy
 import sys
 
-lambda: (yield from 0)  # Python >= 3.3 is required
+lambda: (yield from [])  # Python >= 3.3 is required
 
 def main():
     msg = email.message_from_binary_file(sys.stdin.buffer, policy=email.policy.default)
