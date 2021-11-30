@@ -49,6 +49,21 @@ do
     esac
 done
 shift $((OPTIND - 1))
+if [ $# -lt 1 ]
+then
+    usage >&2
+    exit 1
+fi
+url="$1"
+re='^https://github[.]com/([^/]+/[^/]+)/actions/runs/([0-9]+)([?].*)?$'
+if [[ $url =~ $re ]]
+then
+    repo=${BASH_REMATCH[1]}
+    runid=${BASH_REMATCH[2]}
+else
+    usage >&2
+    exit 1
+fi
 if [ -n "$mc" ]
 then
     if [ $# -ne 1 ]
@@ -66,7 +81,6 @@ else
     fi
     destdir="$2"
 fi
-url="$1"
 if [ -d "$destdir" ]
 then
     nonempty=$(find "$destdir/" -maxdepth 0 -empty)
@@ -79,15 +93,6 @@ else
     mkdir "$destdir"
 fi
 cd "$destdir"
-re='^https://github[.]com/([^/]+/[^/]+)/actions/runs/([0-9]+)([?].*)?$'
-if [[ $url =~ $re ]]
-then
-    repo=${BASH_REMATCH[1]}
-    runid=${BASH_REMATCH[2]}
-else
-    usage >&2
-    exit 1
-fi
 unzip -h >/dev/null
 tmpdir=$(mktemp -d -t github-actions-logs.XXXXXX)
 url="https://api.github.com/repos/$repo/actions/runs/$runid/logs"
