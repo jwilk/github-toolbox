@@ -72,7 +72,11 @@ then
         exit 1
     fi
 	mc -h > /dev/null
-    destdir=$(mktemp -d -t github-actions-logs.XXXXXX)
+    destdir="${TMPDIR:-/tmp}/github-actions-logs-${repo//\//-}-$runid"
+    if ! mkdir -m 700 "$destdir" 2>/dev/null
+    then
+        destdir=$(mktemp -d "${destdir}.XXXXXX")
+    fi
 else
     if [ $# -ne 2 ]
     then
