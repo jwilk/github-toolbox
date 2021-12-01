@@ -108,7 +108,7 @@ curl \
     -H 'Accept: application/vnd.github.v3+json' \
     -L \
     "$url" > "$tmpdir/tmp.zip"
-unzip "$tmpdir/tmp.zip"
+unzip -q "$tmpdir/tmp.zip"
 rm -rf "$tmpdir"
 if [ -n "$mc" ]
 then
