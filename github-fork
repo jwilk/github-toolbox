@@ -3,21 +3,8 @@
 # Copyright © 2017-2021 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
-get_curl_config()
-{
-    printf 'header = "Authorization: token %s"\n' "$github_token"
-    if [ -n "$cacert" ]
-    then
-        printf 'capath = "/nonexistent"\n'
-        printf 'cacert = "%s"\n' "$cacert"
-    fi
-}
-
 set -e -u
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
-user=$(git -C / config --get hub.username)-forks
-json=$(jq -n '{organization: $user}' --arg user "$user")
+org=$(git -C / config --get hub.username)-forks
 if [ $# -eq 0 ]
 then
     printf 'Usage: %s REPO [REPO...]\n' "${0##*/}" >&2
@@ -29,16 +16,7 @@ do
     repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo/forks"
     printf 'POST %s\n' "$url" >&2
-    res=$(curl \
-        --silent --fail --show-error \
-        -K <(get_curl_config) \
-        -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
-        -H 'Accept: application/vnd.github.v3+json' \
-        -X POST --data "$json" \
-        --location \
-        "$url"
-    )
-    jq -r '.["html_url"]' <<<"$res"
+    gh api "$url" -F organization="$org" --jq='.["html_url"]'
 done
 
 # vim:ts=4 sts=4 sw=4 et
