@@ -20,19 +20,7 @@ EOF
     fi
 }
 
-get_curl_config()
-{
-    printf 'header = "Authorization: token %s"\n' "$github_token"
-    if [ -n "$cacert" ]
-    then
-        printf 'capath = "/nonexistent"\n'
-        printf 'cacert = "%s"\n' "$cacert"
-    fi
-}
-
 set -e -u
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 type=
 while getopts 'rpvch-:' opt
 do
@@ -90,13 +78,6 @@ set +f
 jq=".${node}[] | [.count, .uniques$(printf ', .%s' "${columns[@]}")] | @tsv"
 set -f
 printf 'GET %s\n' "$url" >&2
-res=$(curl \
-    --silent --fail --show-error \
-    -K <(get_curl_config) \
-    -H 'User-Agent: github-traffic (https://github.com/jwilk/github-toolbox)' \
-    -H 'Accept: application/vnd.github.v3+json' \
-    "$url"
-)
-jq -r "$jq" <<<"$res"
+gh api "$url" --jq="$jq"
 
 # vim:ts=4 sts=4 sw=4 et
