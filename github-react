@@ -10,19 +10,7 @@ usage()
     printf 'URLs: https://github.com/<owner>/<repo>/issues/<n>\n'
 }
 
-get_curl_config()
-{
-    printf 'header = "Authorization: token %s"\n' "$github_token"
-    if [ -n "$cacert" ]
-    then
-        printf 'capath = "/nonexistent"\n'
-        printf 'cacert = "%s"\n' "$cacert"
-    fi
-}
-
 set -e -u
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 if [ $# -ne 2 ]
 then
     usage >&2
@@ -69,13 +57,6 @@ else
 fi
 json='{"content":"'"$reaction"'"}'
 printf '%s %s\n' POST "$url" >&2
-curl \
-    --silent --fail --show-error \
-    -K <(get_curl_config) \
-    -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
-    -H 'Accept: application/vnd.github.squirrel-girl-preview' \
-    -X POST \
-    --data "$json" \
-    "$url" > /dev/null
+gh api "$url" --input - <<< "$json" > /dev/null
 
 # vim:ts=4 sts=4 sw=4 et
