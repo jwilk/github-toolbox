@@ -3,19 +3,7 @@
 # Copyright © 2017-2021 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
-get_curl_config()
-{
-    printf 'header = "Authorization: token %s"\n' "$github_token"
-    if [ -n "$cacert" ]
-    then
-        printf 'capath = "/nonexistent"\n'
-        printf 'cacert = "%s"\n' "$cacert"
-    fi
-}
-
 set -e -u
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 if [ $# -eq 0 ]
 then
     printf 'Usage: %s REPO [REPO...]\n' "${0##*/}" >&2
@@ -25,17 +13,7 @@ for repo in "$@"
 do
     [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
     repo=${repo#https://github.com/}
-    url="https://api.github.com/repos/$repo"
-    printf 'PATCH %s\n' "$url" >&2
-    json=$(jq -n '{name: $repo, description: "[boring fork, please ignore]", homepage: ""}' --arg repo "${repo#*/}")
-    curl \
-        --silent --fail --show-error \
-        -K <(get_curl_config) \
-        -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
-        -H 'Accept: application/vnd.github.v3+json' \
-        -X PATCH \
-        --data "$json" \
-        "$url" > /dev/null
+    gh repo edit --description='[boring fork, please ignore]' --homepage='' "$repo"
 done
 
 # vim:ts=4 sts=4 sw=4 et
