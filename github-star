@@ -3,19 +3,7 @@
 # Copyright © 2017-2021 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
-get_curl_config()
-{
-    printf 'header = "Authorization: token %s"\n' "$github_token"
-    if [ -n "$cacert" ]
-    then
-        printf 'capath = "/nonexistent"\n'
-        printf 'cacert = "%s"\n' "$cacert"
-    fi
-}
-
 set -e -u
-cacert=$(git -C / config --get-urlmatch http.sslCAInfo https://api.github.com/) || true
-github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 method=PUT
 [ "${0%%*-unstar}" ] || method=DELETE
 if [ $# -eq 0 ]
@@ -29,15 +17,7 @@ do
     repo=${repo#https://github.com/}
     url="https://api.github.com/user/starred/$repo"
     printf '%s %s\n' "$method" "$url" >&2
-    curl \
-        --silent --fail --show-error \
-        -K <(get_curl_config) \
-        -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
-        -H 'Accept: application/vnd.github.v3+json' \
-        -X "$method" \
-        --location \
-        --data '' \
-        "$url" > /dev/null
+    gh api --method="$method" "$url"
 done
 
 # vim:ts=4 sts=4 sw=4 et
