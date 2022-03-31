@@ -13,35 +13,9 @@ URLs: https://github.com/OWNER/REPO/runs/RUNID
 EOF
 }
 
-get_curl_config()
-{
-    printf 'header = "Authorization: token %s"\n' "$github_token"
-    if [ -n "$cacert" ]
-    then
-        printf 'capath = "/nonexistent"\n'
-        printf 'cacert = "%s"\n' "$cacert"
-    fi
-}
-
 set -e -u
 prog="${0##*/}"
-declare -a cacerts
-cacerts=()
-for domain in api.github.com pipelines.actions.githubusercontent.com
-do
-    if cacert=$(git -C / config --get-urlmatch http.sslCAInfo "https://${domain}/")
-    then
-        cacerts+=("$cacert")
-    fi
-done
-cacert=
 tmpdir=$(mktemp -d -t github-actions-logs.XXXXXX)
-if [[ ${#cacerts[@]} -gt 0 ]]
-then
-    cacert="$tmpdir/cacert"
-    cat "${cacerts[@]}" > "$cacert"
-fi
-github_token=$(perl -n -E '/^token\s*=\s*(\S+)/ and say $1' "${XDG_DATA_HOME:-$HOME/.config}"/cligh/cligh.conf)
 mc=
 while getopts 'mh-:' opt
 do
@@ -115,13 +89,7 @@ cd "$destdir"
 unzip -h >/dev/null
 url="https://api.github.com/repos/$repo/actions/runs/$runid/logs"
 printf '%s %s\n' GET "$url" >&2
-curl \
-    --silent --fail --show-error \
-    -K <(get_curl_config) \
-    -H 'User-Agent: github-toolbox (https://github.com/jwilk/github-toolbox)' \
-    -H 'Accept: application/vnd.github.v3+json' \
-    -L \
-    "$url" > "$tmpdir/tmp.zip"
+gh api "$url" > "$tmpdir/tmp.zip"
 unzip -q "$tmpdir/tmp.zip"
 rm -rf "$tmpdir"
 if [ -n "$mc" ]
