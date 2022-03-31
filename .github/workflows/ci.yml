@@ -17,10 +17,9 @@ jobs:
         shellcheck github*
     - name: run tests
       run: |
-        xdg="${XDG_DATA_HOME:-$HOME/.config}"
-        mkdir -m 700 "$xdg/cligh/"
-        cat <<< "token=${{secrets.GITHUB_TOKEN}}" > "$xdg/cligh/cligh.conf"
         JWILK_GITHUB_TOOLBOX_NETWORK_TESTING=1 prove -v
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: check README syntax
       run: |
         python3 -m pip install restructuredtext-lint
