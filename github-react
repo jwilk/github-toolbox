@@ -55,8 +55,25 @@ then
 else
     url="$url/$owner/$repo/issues/$number/reactions"
 fi
-json='{"content":"'"$reaction"'"}'
-printf '%s %s\n' POST "$url" >&2
-gh api "$url" --input - <<< "$json" > /dev/null
+case ${0##*-} in
+    react)
+        printf '%s %s\n' POST "$url" >&2
+        json='{"content":"'"$reaction"'"}'
+        gh api "$url" --input - <<< "$json" > /dev/null
+        ;;
+    unreact)
+        declare -i uid
+        uid=$(gh api 'https://api.github.com/user' --jq '.id')
+        jq='.[] | select(.content == "'"$reaction"'" and .user.id == '"$uid"') | .id'
+        declare -i rid
+        rid=$(gh api "$url" --jq "$jq")
+        url="$url/$rid"
+        printf '%s %s\n' DELETE "$url" >&2
+        gh api "$url" --method=DELETE
+        ;;
+    *)
+        printf '%s: command not implemented\n' "${0##*/}" >&2
+        exit 1
+esac
 
 # vim:ts=4 sts=4 sw=4 et
