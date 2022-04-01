@@ -18,25 +18,21 @@ then
 fi
 reaction="$1"
 url="$2"
-if [ "$reaction" = '+1' ] || [ "$reaction" = '-1' ]
-then
-    :
-elif [ "$reaction" = ':D' ]
-then
-    reaction=laugh
-elif [ "$reaction" = ':/' ]
-then
-    reaction=confused
-elif [ "$reaction" = '<3' ]
-then
-    reaction=heart
-elif [ "$reaction" = '\o/' ]
-then
-    reaction=hooray
-else
-    usage >&2
-    exit 1
-fi
+case $reaction in
+    '+1'|'-1')
+        ;;
+    ':D')
+        reaction=laugh;;
+    ':/')
+        reaction=confused;;
+    '<3')
+        reaction=heart;;
+    '\o/')
+        reaction=hooray;;
+    *)
+        usage >&2
+        exit 1;;
+esac
 re='^https://github[.]com/([^/]+)/([^/]+)/(issues|pull)/([0-9]+)(#issuecomment-([0-9]+))?$'
 if [[ $url =~ $re ]]
 then
