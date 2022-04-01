@@ -6,7 +6,7 @@
 usage()
 {
     printf 'Usage: %s REACTION URL\n' "${0##*/}"
-    printf 'Reactions: +1 -1 :D :/ <3 \o/\n'
+    printf 'Reactions: +1 -1 :D :/ <3 \o/ ! oO\n'
     printf 'URLs: https://github.com/OWNER/REPO/issues/N\n'
 }
 
@@ -29,6 +29,10 @@ case $reaction in
         reaction=heart;;
     '\o/')
         reaction=hooray;;
+    '!')
+        reaction=rocket;;
+    'oO')
+        reaction=eyes;;
     *)
         usage >&2
         exit 1;;
