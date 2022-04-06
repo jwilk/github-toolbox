@@ -3,9 +3,12 @@
 # Copyright © 2017-2022 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
+prog="${0##*/}"
 usage()
 {
-    printf 'Usage: %s [-r REMOTE]\n' "${0##*/}"
+    cat <<EOF
+Usage: $prog [-r REMOTE]
+EOF
 }
 
 set -e -u
