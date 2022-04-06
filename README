@@ -7,13 +7,8 @@ Most of the scripts require:
 
 * `GitHub CLI`_
 
-* git-hub_
-
 .. _GitHub CLI:
    https://cli.github.com/
-
-.. _git-hub:
-   https://github.com/sociomantic-tsunami/git-hub
 
 The ``mail-filter`` script requires:
 
