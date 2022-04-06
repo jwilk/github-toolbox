@@ -28,6 +28,15 @@ then
     owner=${BASH_REMATCH[1]}
     repo=${BASH_REMATCH[2]}
     number=${BASH_REMATCH[4]}
+    case ${BASH_REMATCH[3]} in
+        issues)
+            kind=issue;;
+        pull)
+            kind=pullRequest;;
+        *)
+            echo "$prog: cannot parse URL" >&2
+            exit 1
+    esac
 else
     usage >&2
     exit 1
@@ -45,13 +54,13 @@ esac
 query='
     query($owner: String!, $repo: String!, $number: Int!) {
         repository(owner:$owner, name:$repo) {
-            issue(number:$number) {
+            '"$kind"'(number:$number) {
                 id
             }
         }
     }
 '
-node_id=$(gh api graphql -F owner="$owner" -F repo="$repo" -F number="$number" -f query="$query" -q .data.repository.issue.id)
+node_id=$(gh api graphql -F owner="$owner" -F repo="$repo" -F number="$number" -f query="$query" -q ".data.repository.${kind}.id")
 # shellcheck disable=SC2016
 query='
     mutation ($node_id: ID!, $state: SubscriptionState!) {
@@ -65,13 +74,13 @@ gh api graphql -F node_id="$node_id" -F state="$state" -f query="$query" --silen
 query='
     query($owner: String!, $repo: String!, $number: Int!) {
         repository(owner:$owner, name:$repo) {
-            issue(number:$number) {
+            '"$kind"'(number:$number) {
                 viewerSubscription
             }
         }
     }
 '
-state=$(gh api graphql -F owner="$owner" -F repo="$repo" -F number="$number" -f query="$query" -q .data.repository.issue.viewerSubscription)
+state=$(gh api graphql -F owner="$owner" -F repo="$repo" -F number="$number" -f query="$query" -q ".data.repository.${kind}.viewerSubscription")
 echo "$url: $state"
 
 # vim:ts=4 sts=4 sw=4 et
