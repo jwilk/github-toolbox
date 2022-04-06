@@ -9,6 +9,17 @@ usage()
     cat <<EOF
 Usage: $prog [-r REMOTE]
 EOF
+    if [ "${1-}" = 'long' ]
+    then
+        cat <<EOF
+
+Set up repository for git-hub <https://github.com/sociomantic-tsunami/git-hub>.
+
+Options:
+  -r REMOTE   use this remote
+  -h, --help  show this help message and exit
+EOF
+    fi
 }
 
 set -e -u
