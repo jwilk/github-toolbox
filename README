@@ -12,6 +12,6 @@ Most of the scripts require:
 
 The ``mail-filter`` script requires:
 
-* Python ≥ 3.2
+* Python ≥ 3.3
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et
