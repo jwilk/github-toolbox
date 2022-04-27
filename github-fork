@@ -12,7 +12,6 @@ then
 fi
 for repo in "$@"
 do
-    [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
     repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo/forks"
     printf 'POST %s\n' "$url" >&2

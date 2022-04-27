@@ -49,7 +49,6 @@ then
     exit 1
 fi
 repo="$1"
-[[ $repo == "${repo#*/}" ]] && repo="$USER/$repo"
 repo=${repo#https://github.com/}
 url="https://api.github.com/repos/$repo/traffic"
 node=''

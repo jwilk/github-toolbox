@@ -11,7 +11,6 @@ then
 fi
 for repo in "$@"
 do
-    [ "$repo" = "${repo#*/}" ] && repo="$USER/$repo"
     repo=${repo#https://github.com/}
     gh repo edit --description='[boring fork, please ignore]' --homepage='' "$repo"
 done
