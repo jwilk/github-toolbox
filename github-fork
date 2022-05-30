@@ -3,14 +3,41 @@
 # Copyright © 2017-2022 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
+usage()
+{
+    printf 'Usage: %s [-b] REPO [REPO...]\n' "${0##*/}" >&2
+    if [[ ${1-} == long ]]
+    then
+        printf '\n'
+        cat <<'EOF'
+Options:
+  -b          annotate fork as boring
+  -h, --help  show this help message and exit
+EOF
+    fi
+}
+
 set -e -u
 org=$(git -C / config --get hub.username)-forks
 boring=
-while getopts 'b' opt
+while getopts 'bh-:' opt
 do
     case "$opt" in
         b) boring=1;;
-        *) exit 1;;
+        h)
+            usage long
+            exit 0;;
+        -)
+            if [[ $OPTARG == help ]]; then
+                usage long
+                exit 0
+            fi
+            usage >&2
+            exit 1
+            ;;
+        *)
+            usage >&2
+            exit 1;;
     esac
 done
 shift $((OPTIND - 1))
