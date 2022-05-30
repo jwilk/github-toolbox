@@ -5,9 +5,18 @@
 
 set -e -u
 org=$(git -C / config --get hub.username)-forks
+boring=
+while getopts 'b' opt
+do
+    case "$opt" in
+        b) boring=1;;
+        *) exit 1;;
+    esac
+done
+shift $((OPTIND - 1))
 if [ $# -eq 0 ]
 then
-    printf 'Usage: %s REPO [REPO...]\n' "${0##*/}" >&2
+    printf 'Usage: %s [-b] REPO [REPO...]\n' "${0##*/}" >&2
     exit 1
 fi
 for repo in "$@"
@@ -15,7 +24,12 @@ do
     repo=${repo#https://github.com/}
     url="https://api.github.com/repos/$repo/forks"
     printf 'POST %s\n' "$url" >&2
-    gh api "$url" -F organization="$org" --jq='.["html_url"]'
+    url=$(gh api "$url" -F organization="$org" --jq='.["html_url"]')
+    printf '%s\n' "$url"
+    if [[ -n $boring ]]
+    then
+        gh repo edit --description='[boring fork, please ignore]' --homepage='' "$url"
+    fi
 done
 
 # vim:ts=4 sts=4 sw=4 et
