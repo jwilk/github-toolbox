@@ -9,6 +9,7 @@ jobs:
         include:
         - os: ubuntu-18.04
         - os: ubuntu-20.04
+        - os: ubuntu-22.04
     runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v2
@@ -42,9 +43,9 @@ jobs:
         - python: '3.8'
           os: ubuntu-20.04
         - python: '3.9'
-          os: ubuntu-20.04
+          os: ubuntu-22.04
         - python: '3.10'
-          os: ubuntu-20.04
+          os: ubuntu-22.04
         - python: '3.11-dev'
           os: ubuntu-20.04
     runs-on: ${{matrix.os}}
