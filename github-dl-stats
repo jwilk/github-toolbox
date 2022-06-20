@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Copyright © 2022 Jakub Wilk <jwilk@jwilk.net>
+# SPDX-License-Identifier: MIT
+
+usage()
+{
+    printf 'Usage: %s [-b] REPO [REPO...]\n' "${0##*/}" >&2
+}
+
+set -e -u
+if [ $# -eq 0 ]
+then
+    usage >&2
+    exit 1
+fi
+for repo in "$@"
+do
+    repo=${repo#https://github.com/}
+    url="https://api.github.com/repos/$repo/releases"
+    printf 'GET %s\n' "$url" >&2
+    gh api "$url" --jq '.[].assets[] | [.download_count, .created_at, .updated_at, .browser_download_url] | @tsv'
+done
+
+# vim:ts=4 sts=4 sw=4 et
