@@ -43,7 +43,7 @@ done
 shift $((OPTIND - 1))
 if [ $# -eq 0 ]
 then
-    printf 'Usage: %s [-b] REPO [REPO...]\n' "${0##*/}" >&2
+    usage >&2
     exit 1
 fi
 for repo in "$@"
