@@ -21,7 +21,7 @@ then
     printf 'ok %d # skip set JWILK_GITHUB_TOOLBOX_NETWORK_TESTING=1 to enable tests that exercise network\n' 2 3
     exit
 fi
-url='https://github.com/jwilk/github-toolbox/actions/runs/2073216953'
+url='https://github.com/jwilk/github-toolbox/actions/runs/2707457775'
 tmpdir=$(mktemp -d -t github-actions-logs.tap.XXXXXX)
 "$prog" "$url" "$tmpdir/out"
 out=$(cd "$tmpdir/out" && find . -mindepth 1 -maxdepth 1 -ls)
