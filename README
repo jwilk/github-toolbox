@@ -11,4 +11,17 @@ The ``mail-filter`` script requires:
 
 * Python ≥ 3.3
 
+See also
+========
+
+* `git-hub <https://github.com/sociomantic-tsunami/git-hub>`_
+
+* `grip <https://github.com/joeyespo/grip>`_
+
+* `github-backup <https://github-backup.branchable.com/>`_
+
+* `github-editmeta <https://github.com/jwilk/github-editmeta>`_
+
+* `github-vanity <https://github.com/jwilk/github-vanity>`_
+
 .. vim:ft=rst ts=3 sts=3 sw=3 et
