@@ -59,6 +59,10 @@ origin_url=${origin_url%.git}
 upstream=${origin_url#https://github.com/}
 if [ "$upstream" = "$origin_url" ]
 then
+    upstream=${upstream#git@github.com:}
+fi
+if [ "$upstream" = "$origin_url" ]
+then
     printf "githubize: %s doesn't look like a GitHub URL\\n" "$origin_url" >&2
     exit 1
 fi
