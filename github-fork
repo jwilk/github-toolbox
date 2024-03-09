@@ -55,7 +55,7 @@ do
     printf '%s\n' "$url"
     if [[ -n $boring ]]
     then
-        gh repo edit --description='[boring fork, please ignore]' --homepage='' "$url"
+        gh repo edit --description='[boring fork]' --homepage='' "$url"
     fi
 done
 
