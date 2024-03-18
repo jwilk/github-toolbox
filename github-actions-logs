@@ -60,7 +60,7 @@ then
         usage >&2
         exit 1
     fi
-	mc -h > /dev/null
+    mc -h > /dev/null
     destdir="${TMPDIR:-/tmp}/github-actions-logs-${repo//\//-}-$runid"
     if ! mkdir -m 700 "$destdir" 2>/dev/null
     then
