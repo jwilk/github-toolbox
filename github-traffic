@@ -51,6 +51,11 @@ then
 fi
 repo="$1"
 repo=${repo#https://github.com/}
+if [[ $repo != */* ]]
+then
+    echo "$prog: error: bad repository name: did you mean '$LOGNAME/$repo'?" >&2
+    exit 1
+fi
 url="https://api.github.com/repos/$repo/traffic"
 node=''
 case "$type" in
