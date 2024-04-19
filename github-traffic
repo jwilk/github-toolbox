@@ -5,7 +5,7 @@
 
 usage()
 {
-    printf 'Usage: %s {-r|-p|-v|-c} REPO\n' "${0##*/}"
+    printf 'Usage: %s {-r|-p|-v|-c} REPO\n' "$prog"
     if [[ ${1-} == long ]]
     then
         printf '\n'
@@ -21,6 +21,7 @@ EOF
 }
 
 set -e -u
+prog="${0##*/}"
 type=
 while getopts 'rpvch-:' opt
 do
