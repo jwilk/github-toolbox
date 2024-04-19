@@ -27,10 +27,10 @@ tmpdir=$(mktemp -d -t github-actions-logs.tap.XXXXXX)
 out=$(cd "$tmpdir/out" && find . -mindepth 1 -maxdepth 1 -ls)
 if [ -n "$out" ]
 then
-    echo "ok 2 $prog URL DESTDIR"
+    echo "ok 2 $prg URL DESTDIR"
     sed -e 's/^/# /' <<< "$out"
 else
-    echo "not ok 2 $prog URL DESTDIR"
+    echo "not ok 2 $prg URL DESTDIR"
 fi
 mkdir "$tmpdir/bin"
 cat > "$tmpdir/bin/mc" <<EOF
@@ -47,10 +47,10 @@ chmod +x "$tmpdir/bin/mc"
 out=$(PATH="$tmpdir/bin:$PATH" "$prog" -m "$url")
 if [ -n "$out" ]
 then
-    echo "ok 3 $prg URL DESTDIR"
+    echo "ok 3 $prg -m URL"
     sed -e 's/^/# /' <<< "$out"
 else
-    echo "not ok 3 $prg URL DESTDIR"
+    echo "not ok 3 $prg -m URL"
 fi
 rm -rf "$tmpdir"
 
