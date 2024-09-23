@@ -3,6 +3,7 @@
 # Copyright © 2017-2024 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
+import datetime
 import email.generator
 import email.headerregistry
 import email.policy
@@ -22,6 +23,11 @@ def main():
         )
         del msg['From']
         msg['From'] = from_hdr
+    dt = msg['Date'].datetime
+    dt = dt.astimezone(datetime.timezone.utc)
+    dt = dt.replace(tzinfo=None)
+    del msg['Date']
+    msg['Date'] = dt
     generator = email.generator.BytesGenerator(sys.stdout.buffer, mangle_from_=False)
     generator.flatten(msg, unixfrom=True)
 
