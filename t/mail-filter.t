@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright © 2020 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2020-2024 Jakub Wilk <jwilk@jwilk.net>
 # SPDX-License-Identifier: MIT
 
 set -e -u
